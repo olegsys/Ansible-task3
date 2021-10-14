@@ -3,11 +3,38 @@
   package:
     name: "{{ vsftpd_package }}"
     state: "{{ vsftpd_package_state }}"
-- name: Configure vsftp service
+- name: Configure autostart vsftp service
   service:
     name: "{{ vsftpd_package }}"
+    enabled: "{{ vsftpd_service_enabled }}"
     state: "{{ vsftpd_service_state }}"
 - name: Configure firewall for vsftpd
   firewalld:
     service: "{{ firewalld_service }}"
     state: "{{ firewalld_state }}"
+    permanent: yes
+    immediate: yes
+- name: Configure vsftp
+  template:
+    src: vsftpd.j2
+    dest: /etc/vsftpd/vsftpd.conf
+    mode: 0600
+  notify:
+    - restart_vsftpd
+- name: Configure pub directory
+  file:
+    path: /var/ftp/pub/
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+- name: Configure upload directory
+  file:
+    path: /var/ftp/pub/upload
+    state: directory
+    mode: 0777
+    owner: ftp
+    group: ftp
+    setype: public_content_rw_t
+- name: Configure SE Linux
+  command: /sbin/setsebool -P allow_ftpd_anon_write on

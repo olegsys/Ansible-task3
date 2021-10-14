@@ -1,6 +1,11 @@
 ---
 vsftpd_package: vsftpd
 vsftpd_package_state: present
-vsftpd_service_state: enabled
+vsftpd_service_state: started
+vsftpd_service_enabled: yes
+vsftpd_anonymous_enable: yes
+vsftpd_local_enable: yes
+vsftpd_write_enable: yes
+vsftpd_anon_upload_enable: yes
 firewalld_service: ftp
 firewalld_state: enabled
