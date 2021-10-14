@@ -3,6 +3,13 @@
   package:
     name: "{{ vsftpd_package }}"
     state: "{{ vsftpd_package_state }}"
+- name: Configure vsftp
+  template:
+    src: vsftpd.j2
+    dest: /etc/vsftpd/vsftpd.conf
+    mode: 0600
+  notify:
+    - restart_vsftpd
 - name: Configure autostart vsftp service
   service:
     name: "{{ vsftpd_package }}"
@@ -14,13 +21,6 @@
     state: "{{ firewalld_state }}"
     permanent: yes
     immediate: yes
-- name: Configure vsftp
-  template:
-    src: vsftpd.j2
-    dest: /etc/vsftpd/vsftpd.conf
-    mode: 0600
-  notify:
-    - restart_vsftpd
 - name: Configure pub directory
   file:
     path: /var/ftp/pub/
@@ -36,5 +36,10 @@
     owner: ftp
     group: ftp
     setype: public_content_rw_t
-- name: Configure SE Linux
+  when: vsftpd_anon_upload_enable
+- name: Enable SE Linux anon write
   command: /sbin/setsebool -P allow_ftpd_anon_write on
+  when: vsftpd_anonymous_enable
+- name: Disable SE Linux anon write
+  command: /sbin/setsebool -P allow_ftpd_anon_write off
+  when: not vsftpd_anonymous_enable
