@@ -1,0 +1,23 @@
+---
+- name: Install Apache
+  package:
+    name: "{{ apache_service }}"
+    state: "{{ apache_packages_state }}"
+- name: Configure Apache service state
+  service:
+    name: "{{ apache_service }}"
+    state: "{{ apache_state }}"
+    enabled: "{{ apache_enabled }}"
+- name: Copy index.html
+  template:
+    src: index.html
+    dest: /var/www/html/index.html
+    mode: 0644
+  notify:
+    - restart_apache
+- name: Open web port on firewall
+  firewalld:
+    service: http
+    permanent: yes
+    state: "{{ firewalld_state }}"
+    immediate: yes

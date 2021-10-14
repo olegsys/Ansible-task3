@@ -1,0 +1,6 @@
+---
+apache_service: httpd
+apache_packages_state: present
+apache_state: started
+apache_enabled: yes
+firewalld_state: enabled
