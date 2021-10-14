@@ -1,0 +1,13 @@
+---
+- name: Configure vsftpd package
+  package:
+    name: "{{ vsftpd_package }}"
+    state: "{{ vsftpd_package_state }}"
+- name: Configure vsftp service
+  service:
+    name: "{{ vsftpd_package }}"
+    state: "{{ vsftpd_service_state }}"
+- name: Configure firewall for vsftpd
+  firewalld:
+    service: "{{ firewalld_service }}"
+    state: "{{ firewalld_state }}"

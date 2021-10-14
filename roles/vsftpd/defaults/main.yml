@@ -1,0 +1,6 @@
+---
+vsftpd_package: vsftpd
+vsftpd_package_state: present
+vsftpd_service_state: enabled
+firewalld_service: ftp
+firewalld_state: enabled
